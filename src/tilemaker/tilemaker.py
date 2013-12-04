@@ -63,7 +63,7 @@ os.makedirs(tmp)
 tiffFile = os.path.join(tmp,"mosaic.tiff")
 print "Creating big mosaic"
 cmd = "%s%s%s %s" % (GDAL_BIN_DIRECTORY, "gdalwarp -of GTiff -dstalpha -r cubic "," ".join(srcFiles),tiffFile)
-#os.system(cmd)
+os.system(cmd)
 print "Mosaic created successfully"
 
 mosaic_time = time.time() - start_time
