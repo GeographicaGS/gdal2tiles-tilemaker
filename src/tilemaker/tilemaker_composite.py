@@ -64,13 +64,12 @@ for file in srcFiles:
     i = i+1
     
 tiles_time = time.time() - start_time
-composite_time = time.time() - start_time
 
 # borrado de temporales    
 if remove_tmp:       
     shutil.rmtree(tmp)
 
-elapsed_time = time.time() - start_time
+
 
 
 print "###"
@@ -144,19 +143,13 @@ for zoom in range(ZOOM_START,ZOOM_END):
      
 print "OK"
 
-composite_time = time.time() - start_time
-
 # borrado de temporales    
 if remove_tmp:       
     shutil.rmtree(tmp)
 
+composite_time = time.time() - tiles_time
 elapsed_time = time.time() - start_time
 
 print "Tiles elapsed time: " + helper.timeString(int(tiles_time))
 print "Composite elapsed time: " + helper.timeString(int(composite_time))
 print "Total elapsed time: " + helper.timeString(int(elapsed_time))
-
-        
-        
-    
-    

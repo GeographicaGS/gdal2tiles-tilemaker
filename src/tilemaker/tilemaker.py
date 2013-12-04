@@ -73,7 +73,7 @@ cmd =  "python %sgdal2tiles.py -r cubic -s %s -z %d-%d %s %s" % (GDAL_BIN_DIRECT
 os.system(cmd)
 print "Tiles created successfully"
 
-tiles_time = time.time() - start_time
+tiles_time = time.time() - mosaic_time
 
 # borrado de temporales    
 if remove_tmp:       
@@ -86,9 +86,3 @@ elapsed_time = int(elapsed_time)
 print "Mosaic elapsed time: " + helper.timeString(int(mosaic_time))
 print "Tiles elapsed time: " + helper.timeString(int(tiles_time))
 print "Total elapsed time: " + helper.timeString(int(elapsed_time))
-
-
-        
-        
-    
-    
