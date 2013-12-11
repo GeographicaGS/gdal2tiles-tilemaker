@@ -10,7 +10,7 @@ if len(sys.argv) != 3:
 src = sys.argv[1]
 target = sys.argv[2]
 ZOOM_START = 3
-ZOOM_END = 17
+ZOOM_END = 16
 SYS_REF = "EPSG:23030"
 remove_tmp = True
 
@@ -51,8 +51,7 @@ for root, dir, files in os.walk(src):
     for file in files:
         fileName, fileExtension = os.path.splitext(file)        
         if fileExtension in suportedExtensions:
-            srcFiles.append(os.path.join(root,file))
-            
+            srcFiles.append(os.path.join(root,file))           
     
 
 
@@ -60,9 +59,11 @@ for root, dir, files in os.walk(src):
 tmp = os.path.join(target,"tmp")
 os.makedirs(tmp)
 
-tiffFile = os.path.join(tmp,"mosaic.tiff")
+tiffFile = os.path.join(tmp,"mosaic.vrt")
 print "Creating big mosaic"
-cmd = "%s%s%s %s" % (GDAL_BIN_DIRECTORY, "#!/bin/bash\ngdalwarp -of GTiff -dstalpha -r cubic "," ".join(srcFiles),tiffFile)
+cmd = "%s%s%s %s" % (GDAL_BIN_DIRECTORY, "#!/bin/bash\ngdalwarp -of VRT -dstalpha -r cubic "," ".join(srcFiles),tiffFile)
+#gdalbuildvrt doq_index.vrt
+cmd = "%s %s %s" % ("#!/bin/bash\ngdalbuildvrt -addalpha",tiffFile," ".join(srcFiles))
 script_path = os.path.join(tmp,"gdalwarp_script")
 text_file = open(script_path, "w")
 text_file.write(cmd)
@@ -72,7 +73,6 @@ os.system("chmod +x " + script_path )
 os.system( script_path)
 print "Mosaic created successfully"
 
-
 mosaic_time = time.time() - start_time
 
 print "Creating tiles"
@@ -80,7 +80,7 @@ cmd =  "%sgdal2tiles.py -r cubic -s %s -z %d-%d %s %s" % (GDAL_BIN_DIRECTORY,SYS
 os.system(cmd)
 print "Tiles created successfully"
 
-tiles_time = time.time() - mosaic_time
+tiles_time = time.time() - mosaic_time - start_time
 
 # borrado de temporales    
 if remove_tmp:       
