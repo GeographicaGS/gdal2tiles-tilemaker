@@ -97,6 +97,7 @@ if remove_tmp:
 if remove_output_XML:
     print "Removing XML files"
     sys.stdout.flush()
+    
     for root, dir, files in os.walk(target):
         for file in files:
             fileName, fileExtension = os.path.splitext(file)
