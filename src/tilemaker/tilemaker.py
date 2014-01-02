@@ -10,7 +10,7 @@ if len(sys.argv) != 3:
 src = sys.argv[1]
 target = sys.argv[2]
 ZOOM_START = 3
-ZOOM_END = 17
+ZOOM_END = 18
 SYS_REF = "EPSG:23030"
 remove_tmp = True
 remove_output_XML = True
@@ -18,7 +18,7 @@ remove_output_XML = True
 GDAL_BIN_DIRECTORY = ""
 
 #list of supported extensions
-suportedExtensions = [".sid"]
+suportedExtensions = [".sid",".jp2"]
 
 if not os.path.isdir(src):
     print "Error: Source folder [%s] does not exist." % src
