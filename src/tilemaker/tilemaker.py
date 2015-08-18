@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
+'''
+This script uses gdalbuildvrt and gdal2tiles for building tiles in a TMS file folder structure.
+'''
+
 import os,sys,shutil
 import helper
-
 import time
 
 if len(sys.argv) != 6: 
@@ -26,7 +29,7 @@ print "Creating tiles from sources in %s to %s using reference system %s for zoo
 GDAL_BIN_DIRECTORY = ""
 
 #list of supported extensions
-suportedExtensions = [".sid",".jp2"]
+supportedExtensions = [".sid",".jp2",".tif"]
 
 if not os.path.isdir(src):
     print "Error: Source folder [%s] does not exist." % src
@@ -59,7 +62,7 @@ srcFiles = []
 for root, dir, files in os.walk(src):    
     for file in files:
         fileName, fileExtension = os.path.splitext(file)        
-        if fileExtension in suportedExtensions:
+        if fileExtension in supportedExtensions:
             srcFiles.append(os.path.join(root,file))           
 
 
