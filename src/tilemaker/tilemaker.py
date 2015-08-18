@@ -1,19 +1,27 @@
+#!/usr/bin/env python
+
 import os,sys,shutil
 import helper
 
 import time
 
-if len(sys.argv) != 3: 
-    print "Invalid parameteres <sources_folder> <target_folder> "
+if len(sys.argv) != 6: 
+    print "Invalid parameteres <sources_folder> <target_folder> <Source EPSG code> <Start zoom> <End zoom>"
     sys.exit(-1)
     
 src = sys.argv[1]
 target = sys.argv[2]
-ZOOM_START = 3
-ZOOM_END = 18
-SYS_REF = "EPSG:23030"
+SYS_REF = "EPSG:"+sys.argv[3]
+
+# Starting zoom
+ZOOM_START = float(sys.argv[4])
+# Ending zoom
+ZOOM_END = float(sys.argv[5])
 remove_tmp = True
 remove_output_XML = True
+
+print "Creating tiles from sources in %s to %s using reference system %s for zooms %s-%s..." % \
+    (src, target, SYS_REF, ZOOM_START, ZOOM_END)
 
 GDAL_BIN_DIRECTORY = ""
 
@@ -53,7 +61,6 @@ for root, dir, files in os.walk(src):
         fileName, fileExtension = os.path.splitext(file)        
         if fileExtension in suportedExtensions:
             srcFiles.append(os.path.join(root,file))           
-    
 
 
 #call to gdals
@@ -64,7 +71,7 @@ tiffFile = os.path.join(tmp,"mosaic.vrt")
 print "Creating big mosaic"
 sys.stdout.flush()
 
-cmd = "%s%s%s %s" % (GDAL_BIN_DIRECTORY, "#!/bin/bash\ngdalwarp -of VRT -dstalpha -r cubic "," ".join(srcFiles),tiffFile)
+#cmd = "%s%s%s %s" % (GDAL_BIN_DIRECTORY, "#!/bin/bash\ngdalwarp -of VRT -dstalpha -r cubic "," ".join(srcFiles),tiffFile)
 #gdalbuildvrt doq_index.vrt
 cmd = "%s %s %s" % ("#!/bin/bash\ngdalbuildvrt -addalpha",tiffFile," ".join(srcFiles))
 script_path = os.path.join(tmp,"gdalwarp_script")
@@ -86,7 +93,6 @@ cmd =  "%sgdal2tiles.py -r cubic -s %s -z %d-%d %s %s" % (GDAL_BIN_DIRECTORY,SYS
 os.system(cmd)
 print "Tiles created successfully"
 sys.stdout.flush()
-
 
 tiles_time = time.time() - mosaic_time - start_time
 
