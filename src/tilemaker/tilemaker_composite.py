@@ -8,7 +8,8 @@ This script takes two TMS folder sets (source and target) and performs the follo
 
   - if a tile is present in the source set and in the target, the tile in the
     source will be composed (overlayed) the tile in the target, with the result
-    substituting the target tile;
+    substituting the target tile. A copy of the original target tile will be generated
+    with the .orig extension attached;
 
   - if a tile is present in the target but not in the source, it remains there
     unaffected.
@@ -20,9 +21,11 @@ set can patch an old, much larger one.
 import os,sys,shutil
 import helper
 import time
+from wand.image import Image
+from wand.drawing import Drawing
 
 if len(sys.argv) != 3: 
-    print "Invalid parameteres <set_folder_1> <set_folder_2>"
+    print "Invalid parameteres <source set> <target set>"
     sys.exit(-1)
     
 src = sys.argv[1]
@@ -38,7 +41,7 @@ if not os.path.isdir(target):
     print "Error: Target folder [%s] does not exist." % target
     sys.exit(-1)
 
-answer = helper.query_yes_no("Target folder structure will be modified. Continue?")
+answer = helper.query_yes_no("Target folder structure and files will be modified. Continue?")
 
 if not answer:
     print "Exiting..."
@@ -70,8 +73,20 @@ for root, dir, files in os.walk(target):
 for i in srcFiles:
     if i in targetFiles:
         print "%s tile present in target, merging..." % (i)
+        # Backup image
+        shutil.copy(target+"/"+i, target+"/"+i+".orig")
+        # Merge images with Wand / ImageMagick
+        sourceImg = Image(filename=src+"/"+i)
+        targetImg = Image(filename=target+"/"+i)
+        draw = Drawing()
+        draw.composite(image=sourceImg, operator='src_over', left=0, top=0, width=sourceImg.width, height=sourceImg.height)
+        draw.draw(targetImg)
+        targetImg.save(filename=target+"/"+i)
     else:
         print "%s tile not present in target, copying..." % (i)
+        print src+"/"+i
+        print target+"/"+i
+        shutil.copy(src+"/"+i, target+"/"+i)
         
 
 

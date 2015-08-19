@@ -38,7 +38,6 @@ def query_yes_no(question, default="yes"):
                              "(or 'y' or 'n').\n")
             
 def timeString(elapsed_time):
-    
     if elapsed_time >= 60*60:
         hours = int(elapsed_time/(60*60))
         minutes = int((elapsed_time%(60*60)) / 60) 
