@@ -27,4 +27,4 @@ To compose two tile sets, use __tilemaker_composite.py__:
 python tilemaker_composite.py <source folder> <target folder> <keep originals>
 ```
 
-where __<keep originals>__ is either __true__ or __false__. Keep in mind that the tiles in __<target folder>__ will be modified. A backup of the originals will be made if __<keep originals>__ is true.
+where __keep originals__ is either __true__ or __false__. Keep in mind that the tiles in __target folder__ will be modified. A backup of the originals will be made if __keep originals__ is true.
