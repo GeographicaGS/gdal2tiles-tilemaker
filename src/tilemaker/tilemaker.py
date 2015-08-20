@@ -23,7 +23,7 @@ ZOOM_END = float(sys.argv[5])
 remove_tmp = True
 remove_output_XML = True
 
-print "Creating tiles from sources in %s to %s using reference system %s for zooms %s-%s..." % \
+print "Creating tiles from sources in %s to %s using reference system %s for zooms %i-%i..." % \
     (src, target, SYS_REF, ZOOM_START, ZOOM_END)
 
 GDAL_BIN_DIRECTORY = ""
