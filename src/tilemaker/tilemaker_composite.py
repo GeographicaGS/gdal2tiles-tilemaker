@@ -33,6 +33,10 @@ target = sys.argv[2]
 keepOriginals = sys.argv[3]
 supportedExtensions = [".png"]
 
+start_time = time.time()
+copiedTiles = 0
+mergedTiles = 0
+
 # Check if folders 
 if not os.path.isdir(src):
     print "Error: Source folder [%s] does not exist." % src
@@ -71,7 +75,6 @@ for root, dir, files in os.walk(target):
 # Iterate source tiles 
 for i in srcFiles:
     if i in targetFiles:
-        print "%s tile present in target, merging..." % (i)
         # Backup image
         if keepOriginals=="true":
             shutil.copy(target+"/"+i, target+"/"+i+".orig")
@@ -84,15 +87,19 @@ for i in srcFiles:
         draw.composite(image=sourceImg, operator='src_over', left=0, top=0, width=sourceImg.width, height=sourceImg.height)
         draw.draw(targetImg)
         targetImg.save(filename=target+"/"+i)
+        mergedTiles = mergedTiles+1
     else:
-        print "%s tile not present in target, copying..." % (i)
         # Recreate path if needed
         try:
             os.makedirs(target+"/".join(i.split("/")[:-1]))
         except:
             pass
         shutil.copy(src+"/"+i, target+"/"+i)
+        copiedTiles = copiedTiles+1
+
+elapsed_time = time.time()-start_time
 
 
-
-        
+print "Total copied tiles: %s" % (copiedTiles)
+print "Total merged tiles: %s" % (mergedTiles)
+print "Total elapsed time: %s " % (helper.timeString(int(elapsed_time)))

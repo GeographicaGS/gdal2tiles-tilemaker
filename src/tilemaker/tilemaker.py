@@ -120,8 +120,6 @@ if remove_output_XML:
     
 elapsed_time = time.time() - start_time
 
-elapsed_time = int(elapsed_time) 
-
 print "Mosaic elapsed time: " + helper.timeString(int(mosaic_time))
 print "Tiles elapsed time: " + helper.timeString(int(tiles_time))
 print "Total elapsed time: " + helper.timeString(int(elapsed_time))
