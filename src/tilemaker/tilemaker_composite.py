@@ -21,6 +21,7 @@ set can patch an old, much larger one.
 import os,sys,shutil
 import helper
 import time
+import datetime
 from wand.image import Image
 from wand.drawing import Drawing
 
@@ -28,8 +29,8 @@ if len(sys.argv) != 4:
     print "Invalid parameteres <source set> <target set> <keep originals: true|false>"
     sys.exit(-1)
     
-src = sys.argv[1]
-target = sys.argv[2]
+src = sys.argv[1]+"/"
+target = sys.argv[2]+"/"
 keepOriginals = sys.argv[3]
 supportedExtensions = [".png"]
 
@@ -72,8 +73,27 @@ for root, dir, files in os.walk(target):
             coords.append(file)
             targetFiles.append("/".join(coords))
 
+nowtime = datetime.datetime.now()
+print "Start time: %s/%s %s:%s:%s" % (nowtime.month, nowtime.day, nowtime.hour, nowtime.minute, nowtime.second)
+print "Total source tiles: %s" % (len(srcFiles))
+print "Total target tiles: %s" % (len(targetFiles))
+
+# Source file counter
+n = 0.0
+# Total source files
+srcTotal = float(len(srcFiles))
+# Interval for reporting
+interval = 0
+intervalStep = int(srcTotal/10)
+     
 # Iterate source tiles 
 for i in srcFiles:
+    if n>=interval*intervalStep:
+        print "%s, %s%% > %i tiles so far, %i to go, %s merged, %s copied" % \
+            (helper.timeString(int(time.time()-start_time)), str(int(round(n/srcTotal*100.00))), \
+             n, srcTotal-n, mergedTiles, copiedTiles)
+        interval+=1
+    
     if i in targetFiles:
         # Backup image
         if keepOriginals=="true":
@@ -84,7 +104,8 @@ for i in srcFiles:
         sourceImg = Image(filename=src+"/"+i)
         targetImg = Image(filename=target+"/"+i)
         draw = Drawing()
-        draw.composite(image=sourceImg, operator='src_over', left=0, top=0, width=sourceImg.width, height=sourceImg.height)
+        draw.composite(image=sourceImg, operator='src_over', left=0, top=0, \
+                       width=sourceImg.width, height=sourceImg.height)
         draw.draw(targetImg)
         targetImg.save(filename=target+"/"+i)
         mergedTiles = mergedTiles+1
@@ -96,6 +117,8 @@ for i in srcFiles:
             pass
         shutil.copy(src+"/"+i, target+"/"+i)
         copiedTiles = copiedTiles+1
+
+    n+=1
 
 elapsed_time = time.time()-start_time
 
